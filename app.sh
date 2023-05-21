@@ -5,7 +5,7 @@ DATADOG_API_KEY="$DATADOG_API_KEY"
 DATADOG_APPLICATION_KEY="$DATADOG_APPLICATION_KEY"
 PORT_CLIENT_ID="$PORT_CLIENT_ID"
 PORT_CLIENT_SECRET="$PORT_CLIENT_SECRET"
-DATADOG_API_URL="https://api.datadoghq.com/api/v1/"
+DATADOG_API_URL="https://api.us5.datadoghq.com/api/v1"
 PORT_API_URL="https://api.getport.io/v1"
 BLUEPRINT_ID="serviceDependency"
 
@@ -18,7 +18,7 @@ access_token=$(echo "$token_response" | jq -r '.accessToken')
 # Create entity in Port
 add_entity_to_port() {
     entity_object="$1"
-    response=$(curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $access_token" -d "$entity_object" "$PORT_API_URL/blueprints/$BLUEPRINT_ID/entities?upsert=true&merge=true")
+    response=$(curl -v -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $access_token" -d "$entity_object" "$PORT_API_URL/blueprints/$BLUEPRINT_ID/entities?upsert=true&merge=true")
     echo "$response"
 }
 
