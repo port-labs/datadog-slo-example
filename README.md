@@ -19,7 +19,7 @@ The list of the required variables to run this pipeline are:
 - `PORT_CLIENT_SECRET`
 - `DATADOG_API_KEY`
 - `DATADOG_APPLICATION_KEY`
-- `DATADOG_ENVIRONMENT`
+- `DATADOG_ENVIRONMENT_ID`
 - `DATADOG_API_URL`
 
 ### Schedule the script

@@ -3,13 +3,13 @@
 # Get environment variables
 DATADOG_API_KEY="$DATADOG_API_KEY"
 DATADOG_APPLICATION_KEY="$DATADOG_APPLICATION_KEY"
+DATADOG_ENVIRONMENT_ID="$DATADOG_ENVIRONMENT_ID"
 PORT_CLIENT_ID="$PORT_CLIENT_ID"
 PORT_CLIENT_SECRET="$PORT_CLIENT_SECRET"
 DATADOG_API_URL="https://api.us5.datadoghq.com/api/v1"
 PORT_API_URL="https://api.getport.io/v1"
 BLUEPRINT_ID="serviceDependency"
 
-echo "$DATADOG_APPLICATION_KEY"
 # Get Port Access Token
 credentials="{\"clientId\": \"$PORT_CLIENT_ID\", \"clientSecret\": \"$PORT_CLIENT_SECRET\"}"
 token_response=$(curl -X POST -H "Content-Type: application/json" -d "$credentials" "$PORT_API_URL/auth/access_token")
@@ -22,7 +22,7 @@ add_entity_to_port() {
     echo "$response"
 }
 
-# Retrieve service dependencies from Datadog
+# Retrieve service dependencies from Datadog using REST API
 retrieve_service_dependencies() {
     env="$1"
     headers="-H 'DD-API-KEY: $DATADOG_API_KEY' -H 'DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY' -H 'Accept: application/json'"
@@ -39,4 +39,4 @@ retrieve_service_dependencies() {
     done
 }
 
-retrieve_service_dependencies "dev"
+retrieve_service_dependencies "$DATADOG_ENVIRONMENT_ID"
