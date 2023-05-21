@@ -27,11 +27,14 @@ retrieve_service_dependencies() {
     headers="-H 'DD-API-KEY: $DATADOG_API_KEY' -H 'DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY' -H 'Accept: application/json'"
     services_response=$(curl -s $headers "$DATADOG_API_URL/service_dependencies?env=$env")
     service_dependencies=$(echo "$services_response" | jq '.')
+    echo "$service_dependencies"
 
     for service in $(echo "$service_dependencies" | jq -r 'keys[]'); do
-        related_services=$(echo "$service_dependencies" | jq -r ".[\"$service\"].calls")
-        entity="{\"identifier\": \"$service\", \"title\": \"$service\", \"properties\": {}, \"relations\": {\"serviceDependency\": $related_services}}"
-        add_entity_to_port "$entity"
+        calls=$(echo "$service_dependencies" | jq -r ".[\"$service\"] | select(.calls) | .calls")
+        if [[ "$calls" != "null" ]]; then
+            entity="{\"identifier\": \"$service\", \"title\": \"$service\", \"properties\": {}, \"relations\": {\"serviceDependency\": $calls}}"
+            add_entity_to_port "$entity"
+        fi
     done
 }
 
