@@ -49,6 +49,7 @@ def retrieve_service_dependencies(env):
     headers = {'DD-API-KEY': f'{DATADOG_API_KEY}', 'DD-APPLICATION-KEY': f'{DATADOG_APPLICATION_KEY}', 'Accept': 'application/json'}
     services_response = requests.get(f'{DATADOG_API_URL}/service_dependencies?env={env}', headers=headers)
     service_dependencies = services_response.json()
+    print(service_dependencies)
     for service in service_dependencies:
         related_services = service_dependencies[service]["calls"]
         entity = {
