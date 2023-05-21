@@ -1,4 +1,4 @@
-image: bash
+image: alpine:latest
 
 variables:
   PORT_CLIENT_ID: $PORT_CLIENT_ID
@@ -12,10 +12,10 @@ stages:
 ingest_datadog_apm_to_port_job:
   stage: build
   before_script:
-    - apt-get update && apt-get install -y curl jq
+    - apk update && apk add curl jq
   script:
     - echo "Getting Datadog Service APM"
-    - bash app.sh
+    - sh app.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
