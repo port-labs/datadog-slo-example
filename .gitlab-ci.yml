@@ -1,23 +1,21 @@
-image: python:3.8
+image: bash
 
 variables:
   PORT_CLIENT_ID: $PORT_CLIENT_ID
   PORT_CLIENT_SECRET: $PORT_CLIENT_SECRET
-  RUN_LINK: $CI_PIPELINE_URL
-  OPSGENIE_API_KEY: $OPSGENIE_API_KEY
+  DATADOG_API_KEY: $DATADOG_API_KEY
+  DATADOG_APPLICATION_KEY: $DATADOG_APPLICATION_KEY
 
 stages:
   - build
 
-ingest_opsgenie_data_to_port_job:
+ingest_datadog_apm_to_port_job:
   stage: build
   before_script:
-    - python -m pip install --upgrade pip
-    - pip install --upgrade setuptools
-    - pip install --no-cache-dir -r requirements.txt
+    - apt-get update && apt-get install -y curl jq
   script:
-    - echo "Getting OpsGenie on-call users"
-    - python opsgenie/app.py
+    - echo "Getting Datadog Service APM"
+    - bash app.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
