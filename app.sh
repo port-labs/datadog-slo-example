@@ -9,7 +9,7 @@ DATADOG_API_URL="https://api.us5.datadoghq.com/api/v1/"
 PORT_API_URL="https://api.getport.io/v1"
 BLUEPRINT_ID="serviceDependency"
 
-echo "$DATADOG_API_KEY"
+echo "$DATADOG_APPLICATION_KEY"
 # Get Port Access Token
 credentials="{\"clientId\": \"$PORT_CLIENT_ID\", \"clientSecret\": \"$PORT_CLIENT_SECRET\"}"
 token_response=$(curl -X POST -H "Content-Type: application/json" -d "$credentials" "$PORT_API_URL/auth/access_token")
