@@ -1,4 +1,4 @@
-image: alpine:latest
+image: ubuntu:latest
 
 variables:
   PORT_CLIENT_ID: $PORT_CLIENT_ID
@@ -13,7 +13,8 @@ stages:
 ingest_datadog_slo_to_port_job:
   stage: build
   before_script:
-    - apk update && apk add curl jq
+    - apt-get update
+    - apt-get install -y curl jq
   script:
     - echo "Getting Datadog SLO"
     - sh datadog/start.sh
