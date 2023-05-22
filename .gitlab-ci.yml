@@ -16,7 +16,7 @@ ingest_datadog_slo_to_port_job:
     - apk update && apk add curl jq
   script:
     - echo "Getting Datadog SLO"
-    - sh /datadog/app.sh
+    - sh datadog/app.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
