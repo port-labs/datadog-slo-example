@@ -32,6 +32,7 @@ retrieve_slos() {
 
     # Iterate over each object in the JSON array
     echo "$json_data_escaped" | while IFS='' read -r slo; do
+        echo "$slo"
         identifier=$(echo "$slo" | jq -r '.id')
         title=$(echo "$slo" | jq -r '.name')
         description=$(echo "$slo" | jq -r '.description')
