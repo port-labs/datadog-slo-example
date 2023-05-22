@@ -46,7 +46,7 @@ retrieve_slos() {
 
 retrieve_slos_new() {
     headers="DD-API-KEY: $DATADOG_API_KEY\nDD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY\nAccept: application/json"
-    services_response=$(curl -s -X GET -H "$headers" "$DATADOG_API_URL/slo")
+    services_response=$(curl -s -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
     slos=$(echo "$services_response" | jq -r '.data[]')
 
     for slo in $slos; do
