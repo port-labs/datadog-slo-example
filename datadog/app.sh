@@ -38,7 +38,7 @@ retrieve_slos() {
         creator=$(echo "$slo" | jq -r '.creator.email')
         tags=$(echo "$slo" | jq -r '.tags[]')
 
-        entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"target\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
+        entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"thresholdTarget\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
         echo "$entity"
         add_entity_to_port "$entity"
     done
