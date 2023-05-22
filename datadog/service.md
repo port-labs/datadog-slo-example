@@ -1,21 +1,26 @@
 ```json showLineNumbers
 {
-  "identifier": "serviceDependency",
-  "title": "Datadog Service",
-  "icon": "Datadog",
+  "identifier": "microservice",
+  "title": "Microservice",
+  "icon": "Service",
   "schema": {
-    "properties": {},
+    "properties": {
+      "description": {
+        "title": "Description",
+        "type": "string"
+      }
+    },
     "required": []
   },
   "mirrorProperties": {},
-  "calculationProperties": {},
-  "relations": {
-    "serviceDependency": {
-      "title": "Depends On",
-      "target": "serviceDependency",
-      "required": false,
-      "many": true
+  "calculationProperties": {
+    "service": {
+      "title": "Service URL",
+      "calculation": "'https://datadoghq.com/apm/services/' + .identifier",
+      "type": "string",
+      "format": "url"
     }
-  }
+  },
+  "relations": {}
 }
 ```

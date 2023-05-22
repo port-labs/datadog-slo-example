@@ -10,13 +10,13 @@ variables:
 stages:
   - build
 
-ingest_datadog_apm_to_port_job:
+ingest_datadog_slo_to_port_job:
   stage: build
   before_script:
     - apk update && apk add curl jq
   script:
-    - echo "Getting Datadog Service APM"
-    - sh app.sh
+    - echo "Getting Datadog SLO"
+    - sh /datadog/app.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always

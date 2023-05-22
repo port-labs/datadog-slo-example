@@ -9,7 +9,7 @@ DATADOG_API_KEY = config("DATADOG_API_KEY")
 DATADOG_APPLICATION_KEY = config("DATADOG_APPLICATION_KEY")
 PORT_CLIENT_ID = config("PORT_CLIENT_ID")
 PORT_CLIENT_SECRET = config("PORT_CLIENT_SECRET")
-DATADOG_API_URL = "https://api.us5.datadoghq.com/api/v1/"
+DATADOG_API_URL = "https://api.us5.datadoghq.com/api/v1"
 PORT_API_URL = "https://api.getport.io/v1"
 
 
@@ -22,7 +22,7 @@ access_token = token_response.json()['accessToken']
 headers = {
 	'Authorization': f'Bearer {access_token}'
 }
-blueprint_id = 'serviceDependency'
+blueprint_id = 'datadogSLO'
 
 
 def add_entity_to_port(entity_object):
@@ -42,21 +42,25 @@ def add_entity_to_port(entity_object):
     print(response.json())
 
 
-def retrieve_service_dependencies(env):
-    """A function to make API request to Datadog to retrieve service dependencies"""
+def retrieve_slos():
+    """A function to make API request to Datadog to retrieve SLOs"""
 
     ## First, get OpsGenie Schedules
     headers = {'DD-API-KEY': f'{DATADOG_API_KEY}', 'DD-APPLICATION-KEY': f'{DATADOG_APPLICATION_KEY}', 'Accept': 'application/json'}
-    services_response = requests.get(f'{DATADOG_API_URL}/service_dependencies?env={env}', headers=headers)
-    service_dependencies = services_response.json()
-    print(service_dependencies)
-    for service in service_dependencies:
-        related_services = service_dependencies[service]["calls"]
+    services_response = requests.get(f'{DATADOG_API_URL}/slo', headers=headers)
+    slos = services_response.json()["data"]
+    for slo in slos:
         entity = {
-            "identifier": service,
-            "title": service,
-            "properties": {},
-            "relations": {"serviceDependency": related_services}
+            "identifier": slo["id"],
+            "title": slo["name"],
+            "properties": {
+                "description": slo["description"],
+                "target": slo["target_threshold"],
+                "timeframe": slo["timeframe"],
+                "type": slo["type"],
+                "creator": slo["creator"]["email"]
+            },
+            "relations": {"microservice": slo["tags"]}
             }
         add_entity_to_port(entity)
-retrieve_service_dependencies("dev")
+retrieve_slos()

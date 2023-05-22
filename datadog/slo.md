@@ -1,0 +1,48 @@
+```json showLineNumbers
+{
+  "identifier": "datadogSLO",
+  "description": "This blueprint represents a Datadog SLO in our software catalog",
+  "title": "Datadog SLO",
+  "icon": "Datadog",
+  "schema": {
+    "properties": {
+      "description": {
+        "type": "string",
+        "title": "Description"
+      },
+      "target": {
+        "type": "number",
+        "title": "Threshold Target"
+      },
+      "timeframe": {
+        "type": "string",
+        "title": "Threshold Timeframe"
+      },
+      "type": {
+        "type": "string",
+        "title": "SLO Type",
+        "enum": [
+          "metric",
+          "monitor"
+        ]
+      },
+      "creator": {
+        "type": "string",
+        "format": "email",
+        "title": "Creator"
+      }
+    },
+    "required": []
+  },
+  "mirrorProperties": {},
+  "calculationProperties": {},
+  "relations": {
+    "microservice": {
+      "title": "Services",
+      "target": "microservice",
+      "required": false,
+      "many": true
+    }
+  }
+}
+```

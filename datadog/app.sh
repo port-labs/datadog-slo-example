@@ -8,7 +8,7 @@ PORT_CLIENT_ID="$PORT_CLIENT_ID"
 PORT_CLIENT_SECRET="$PORT_CLIENT_SECRET"
 DATADOG_API_URL="https://api.us5.datadoghq.com/api/v1"
 PORT_API_URL="https://api.getport.io/v1"
-BLUEPRINT_ID="serviceDependency"
+BLUEPRINT_ID="datadogSLO"
 
 # Get Port Access Token
 credentials="{\"clientId\": \"$PORT_CLIENT_ID\", \"clientSecret\": \"$PORT_CLIENT_SECRET\"}"
@@ -27,16 +27,22 @@ retrieve_service_dependencies() {
     env="$1"
     headers="-H 'DD-API-KEY: $DATADOG_API_KEY' -H 'DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY' -H 'Accept: application/json'"
     services_response=$(curl -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/service_dependencies?env=$env")
-    service_dependencies=$(echo "$services_response" | jq '.')
-    echo "$service_dependencies"
+    slos=$(echo "$services_response" | jq -r '.data[]')
+    echo "$slos"
 
-    for service in $(echo "$service_dependencies" | jq -r 'keys[]'); do
-        calls=$(echo "$service_dependencies" | jq -r ".[\"$service\"] | select(.calls) | .calls")
-        if [[ "$calls" != "null" ]]; then
-            entity="{\"identifier\": \"$service\", \"title\": \"$service\", \"properties\": {}, \"relations\": {\"serviceDependency\": $calls}}"
-            add_entity_to_port "$entity"
-        fi
+    for slo in $slos; do
+        identifier=$(echo "$slo" | jq -r '.id')
+        title=$(echo "$slo" | jq -r '.name')
+        description=$(echo "$slo" | jq -r '.description')
+        target=$(echo "$slo" | jq -r '.target_threshold')
+        timeframe=$(echo "$slo" | jq -r '.timeframe')
+        type=$(echo "$slo" | jq -r '.type')
+        creator=$(echo "$slo" | jq -r '.creator.email')
+        tags=$(echo "$slo" | jq -r '.tags[]')
+
+        entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"target\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
+
+        add_entity_to_port "$entity"
     done
 }
-
-retrieve_service_dependencies "$DATADOG_ENVIRONMENT_ID"
+retrieve_slos
