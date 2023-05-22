@@ -27,7 +27,7 @@ retrieve_slos() {
     headers="DD-API-KEY: $DATADOG_API_KEY\nDD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY\nAccept: application/json"
     services_response=$(curl -s -H "$headers" "$DATADOG_API_URL/slo")
     slos=$(echo "$services_response" | jq -c '.data[]')
-    echo "$slo"
+    echo "$slos"
 
     while IFS= read -r slo; do
         identifier=$(echo "$slo" | jq -r '.id')
