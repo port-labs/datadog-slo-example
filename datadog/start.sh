@@ -27,7 +27,8 @@ add_entity_to_port() {
 retrieve_slos() {
     # Retrieve SLOs from Datadog
     SERVICES_RESPONSE=$(curl -s -X GET -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
-    SLOS=$(echo "$SERVICES_RESPONSE" | jq -r '.data[]')
+    SLOS=$(echo "$SERVICES_RESPONSE" | jq -c '.data[]')
+    echo "$SLOS"
 
     for SLO in $SLOS; do
         echo "$SLO"
