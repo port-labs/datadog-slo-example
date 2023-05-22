@@ -3,7 +3,11 @@
 
 ## Getting started
 
-In this example you will create a blueprint for `service` entity that ingests all SLOs in your Datadog account. You will then add some shell script to create new entities in Port every time a GitLab CI is triggered by a schedule.
+In this guide, you will go through the process of ingesting Datadog SLOs into Port, ensuring seamless integration between the two platforms. By following these steps, you will be able to create a blueprint for the `microservice` entity in Port, representing a service in your Datadog account. Additionally, you will establish a relationship between this service and the `datadogSLO` blueprint, enabling the ingestion of all defined SLOs from your Datadog account.
+
+To ensure a successful mapping of the entities, it is crucial that the identifiers of the Port `microservice` entities match the names of the corresponding entities in your Datadog account. In cases where a mismatch occurs, you can utilize Datadog Tags to align the actual identifier in Port.
+
+When creating your SLO in Datadog, add a tag with the name of the `micorservice` identifier in Port. You can then use the value of the `tags` property from the response of the Datadog SLO API request to establish a connection between the Datadog SLO service and the Port microservice.
 
 ## Service Blueprint
 Create the service blueprint in Port [using this json file](./datadog/service.md)
