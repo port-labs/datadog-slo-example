@@ -25,6 +25,7 @@ add_entity_to_port() {
 retrieve_slos() {
     services_response=$(curl -s -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
     slos=$(echo "$services_response" | jq -c '.data[]')
+    echo "$slos"
 
     # Escape control characters in the JSON data
     json_data_escaped=$(echo "$slos" | sed 's/[\x00-\x1F\x7F]//g')
