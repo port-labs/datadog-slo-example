@@ -24,16 +24,17 @@ add_entity_to_port() {
 
 # Retrieve service dependencies from Datadog using REST API
 retrieve_slos() {
-    services_response=$(curl -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
-    slos=$(echo "$services_response" | jq -r '.data[]')
-    echo "$slos"
+    headers="DD-API-KEY: $DATADOG_API_KEY\nDD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY\nAccept: application/json"
+    services_response=$(curl -s -H "$headers" "$DATADOG_API_URL/slo")
+    slos=$(echo "$services_response" | jq -c '.data[]')
+    echo "$slo"
 
-    for slo in $slos; do
+    while IFS= read -r slo; do
         identifier=$(echo "$slo" | jq -r '.id')
         title=$(echo "$slo" | jq -r '.name')
         description=$(echo "$slo" | jq -r '.description')
-        target=$(echo "$slo" | jq -r '.target_threshold')
-        timeframe=$(echo "$slo" | jq -r '.timeframe')
+        target=$(echo "$slo" | jq -r '.thresholds.target')
+        timeframe=$(echo "$slo" | jq -r '.thresholds.timeframe')
         type=$(echo "$slo" | jq -r '.type')
         creator=$(echo "$slo" | jq -r '.creator.email')
         tags=$(echo "$slo" | jq -r '.tags[]')
@@ -41,6 +42,6 @@ retrieve_slos() {
         entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"target\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
 
         add_entity_to_port "$entity"
-    done
+    done <<< "$slos"
 }
 retrieve_slos
