@@ -25,9 +25,9 @@ add_entity_to_port() {
 # Retrieve service dependencies from Datadog using REST API
 retrieve_slos() {
     services_response=$(curl -s -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
-    slos=$(echo "$services_response" | jq -c '.data')
+    slos=$(echo "$services_response" | jq -c '.data[]')
 
-for slo in $(echo "$slos" | jq -c '.[]'); do
+    for slo in $slos; do
         echo "$slo"
         identifier=$(echo "$slo" | jq -r '.id')
         title=$(echo "$slo" | jq -r '.name')
