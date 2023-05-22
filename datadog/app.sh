@@ -23,10 +23,8 @@ add_entity_to_port() {
 }
 
 # Retrieve service dependencies from Datadog using REST API
-retrieve_service_dependencies() {
-    env="$1"
-    headers="-H 'DD-API-KEY: $DATADOG_API_KEY' -H 'DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY' -H 'Accept: application/json'"
-    services_response=$(curl -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/service_dependencies?env=$env")
+retrieve_slos() {
+    services_response=$(curl -H "DD-API-KEY: $DATADOG_API_KEY" -H "DD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY" -H "Accept: application/json" "$DATADOG_API_URL/slo")
     slos=$(echo "$services_response" | jq -r '.data[]')
     echo "$slos"
 
