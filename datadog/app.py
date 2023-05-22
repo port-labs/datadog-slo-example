@@ -50,6 +50,7 @@ def retrieve_slos():
     services_response = requests.get(f'{DATADOG_API_URL}/slo', headers=headers)
     slos = services_response.json()["data"]
     for slo in slos:
+        print(slo)
         entity = {
             "identifier": slo["id"],
             "title": slo["name"],
