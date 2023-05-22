@@ -28,19 +28,19 @@ retrieve_slos() {
     slos=$(echo "$services_response" | jq -c '.data[]')
     echo "$slos"
 
-    for slo in $slos; do
-        identifier=$(echo "$slo" | jq -r '.id')
-        title=$(echo "$slo" | jq -r '.name')
-        description=$(echo "$slo" | jq -r '.description')
-        target=$(echo "$slo" | jq -r '.target_threshold')
-        timeframe=$(echo "$slo" | jq -r '.timeframe')
-        type=$(echo "$slo" | jq -r '.type')
-        creator=$(echo "$slo" | jq -r '.creator.email')
-        tags=$(echo "$slo" | jq -r '.tags[]')
+    while IFS= read -r slo; do
+            identifier=$(echo "$slo" | jq -r '.id')
+            title=$(echo "$slo" | jq -r '.name')
+            description=$(echo "$slo" | jq -r '.description')
+            target=$(echo "$slo" | jq -r '.thresholds[0].target')
+            timeframe=$(echo "$slo" | jq -r '.thresholds[0].timeframe')
+            type=$(echo "$slo" | jq -r '.type')
+            creator=$(echo "$slo" | jq -r '.creator.email')
+            tags=$(echo "$slo" | jq -r '.tags[]')
 
-        entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"target\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
+            entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"target\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$tags\"}}"
 
-        add_entity_to_port "$entity"
-    done
+            add_entity_to_port "$entity"
+        done <<< "$slos"
 }
 retrieve_slos
