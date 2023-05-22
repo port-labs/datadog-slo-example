@@ -43,4 +43,29 @@ retrieve_slos() {
         add_entity_to_port "$entity"
     done
 }
-retrieve_slos
+
+retrieve_slos_new() {
+    headers="DD-API-KEY: $DATADOG_API_KEY\nDD-APPLICATION-KEY: $DATADOG_APPLICATION_KEY\nAccept: application/json"
+    services_response=$(curl -s -X GET -H "$headers" "$DATADOG_API_URL/slo")
+    slos=$(echo "$services_response" | jq -r '.data[]')
+
+    for slo in $slos; do
+        echo "$slo"
+        identifier=$(echo "$slo" | jq -r '.id')
+        title=$(echo "$slo" | jq -r '.name')
+        description=$(echo "$slo" | jq -r '.description')
+        target=$(echo "$slo" | jq -r '.target_threshold')
+        timeframe=$(echo "$slo" | jq -r '.timeframe')
+        type=$(echo "$slo" | jq -r '.type')
+        creator=$(echo "$slo" | jq -r '.creator.email')
+        microservice=$(echo "$slo" | jq -r '.tags[]')
+        echo "$title"
+        echo "$target"
+        echo "$type"
+        echo "$identifier"
+        entity="{\"identifier\": \"$identifier\", \"title\": \"$title\", \"properties\": {\"description\": \"$description\", \"thresholdTarget\": \"$target\", \"timeframe\": \"$timeframe\", \"type\": \"$type\", \"creator\": \"$creator\"}, \"relations\": {\"microservice\": \"$microservice\"}}"
+        echo "$entity"
+        add_entity_to_port "$entity"
+    done
+}
+retrieve_slos_new
