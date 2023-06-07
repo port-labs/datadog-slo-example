@@ -1,4 +1,3 @@
-```json showLineNumbers
 {
   "identifier": "datadogSLO",
   "description": "This blueprint represents a Datadog SLO in our software catalog",
@@ -45,4 +44,3 @@
     }
   }
 }
-```
